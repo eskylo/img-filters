@@ -50,7 +50,7 @@ set(LIBRARY_OUTPUT_PATH  ${CMAKE_BINARY_DIR}/lib)
 message(${CMAKE_BINARY_DIR})
 
 # ls -1 src/*.c
-set(SOURCES src/calculadora.c)
+set(SOURCES src/principal.c)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
