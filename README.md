@@ -35,7 +35,7 @@ Duas formas simples de gerar o executável:
   <li>make</li>: gera os objetos, a biblioteca estática e então, o executável</li>
 </ul>
 
-## cmake b�sico
+## cmake básico
 ### Ref.: <a href="https://cmake.org/examples">https://cmake.org/examples</a>
 <ul>
   <li>	cmake -S . -B build</li>
