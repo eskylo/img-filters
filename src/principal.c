@@ -96,6 +96,8 @@ int main(void) {
 
 	fread(buf, sizeof(unsigned char), sz, streamIn);
 
+	border(buf, infohd.width, infohd.height);
+
 	fo = fopen(out, "wb");			/* Open the file */
 	if (fo == NULL) {
 		perror("fopen()");

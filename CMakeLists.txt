@@ -21,9 +21,9 @@ project(MyProj
 )
 
 # Minimal STATIC lib
-# add_library(libmycalc lib/funcoesarit.c lib/funcoesaux.c)
-# add_executable(calc src/calculadora.c)
-# target_link_libraries(calc libmycalc)
+# add_library(libmyimg lib/funcoesarit.c lib/funcoesaux.c)
+# add_executable(img src/imguladora.c)
+# target_link_libraries(img libmyimg)
 # Dependences
 # find_library(m_library NAMES m PATHS /usr/local/lib)
 # target_link_libraries(cac ${m_library})
@@ -40,7 +40,7 @@ endif()
 
 include(GNUInstallDirs)
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -glldb -fno-omit-frame-pointer -DDBG")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fno-omit-frame-pointer -DDBG")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -W -Wall -Wunused -O2 -std=c11 -static")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
@@ -54,38 +54,38 @@ set(SOURCES src/principal.c)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-add_executable(calc ${SOURCES})
-target_link_libraries(calc mycalc)
+add_executable(img ${SOURCES})
+target_link_libraries(img myimg)
 
 # ls -1 lib/*.c
-add_library(mycalc STATIC lib/funcoesarit.c lib/funcoesaux.c)
-# add_library(mycalc SHARED lib/funcoesarit.c lib/funcoesaux.c)
+add_library(myimg STATIC lib/showheader.c lib/border.c)
+# add_library(myimg SHARED lib/funcoesarit.c lib/funcoesaux.c)
 
-set_target_properties(mycalc PROPERTIES
-    OUTPUT_NAME mycalc
+set_target_properties(myimg PROPERTIES
+    OUTPUT_NAME myimg
     VERSION ${PROJECT_VERSION}
     SOVERSION 1
-    PUBLIC_HEADER include/calc.h)
+    PUBLIC_HEADER include/showheader.h)
 
-target_include_directories(mycalc PUBLIC
+target_include_directories(myimg PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>
     PRIVATE src)
 
-configure_file(mycalc.pc.in mycalc.pc @ONLY)
+configure_file(myimg.pc.in myimg.pc @ONLY)
 
-install(TARGETS mycalc EXPORT MyCalcLibConfig
+install(TARGETS myimg EXPORT MyImgLibConfig
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
     PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
-install(FILES ${CMAKE_BINARY_DIR}/mycalc.pc
+install(FILES ${CMAKE_BINARY_DIR}/myimg.pc
     DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/pkgconfig)
 
 install(DIRECTORY include/
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME})
 
-# install(EXPORT MyCalcLibConfig DESTINATION share/MyCaclLib/cmake)
-# export(TARGETS ${PROJECT_NAME} FILE MyCalcLibConfig.cmake)
+# install(EXPORT MyImgLibConfig DESTINATION share/MyCaclLib/cmake)
+# export(TARGETS ${PROJECT_NAME} FILE MyImgLibConfig.cmake)
 
