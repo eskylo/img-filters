@@ -1,2 +1,0 @@
-/usr/bin/ar qc lib/libmyimg.a CMakeFiles/myimg.dir/lib/showheader.c.o CMakeFiles/myimg.dir/lib/border.c.o
-/usr/bin/ranlib lib/libmyimg.a

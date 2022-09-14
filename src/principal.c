@@ -4,9 +4,6 @@
 #include "bmp.h"
 #include "showheader.h"
 
-/* Compilar com:
- 	clang -Wall -std=c11 -O2 showheader.c -o showheader
- */
 /*
    Header:
    offset	size	description
@@ -29,6 +26,7 @@
 */
 
 int main(void) {
+
 	bmpheader hd;
 	bmpinfoheader infohd;
 
@@ -38,28 +36,28 @@ int main(void) {
 	char fname[] = "./lena512.bmp";
 	char out[] = "./saida.bmp";
 	unsigned char *buf;
+	int option, bsize;
 
 	FILE *streamIn, *fo;
 
 	unsigned int i;
 	double sz;
 
-	streamIn = fopen(fname, "rb");		/* Open the file */
+	/* Display menu */
+	printf("Choose a filter:\n\n");
+	printf("[1] White Border\n");
+	printf("[2] Black Border\n");
+	printf("[3] Negative\n");
+	scanf("%d", &option);
+
+	streamIn = fopen(fname, "rb");	/* Open the file */
 	if (streamIn == NULL) {
 		perror("fopen()");
 		exit(EXIT_FAILURE);
 	}
 
-        /* Reading the bitmap file header struct */
-        // fread(&hd, sizeof(bmpheader), 1, streamIn);
-	// if (hd.type != 0x4D42) {fclose(streamIn); exit(EXIT_FAILURE);}
-        /* Reading the bitmap info header struct */
-        // fread(&infohd, sizeof(bmpinfoheader), 1, streamIn);
-        // Moving the file pointer to the beginning of bitmap data
-        // fseek(streamIn, hd.offset, SEEK_SET);
-
 	for (i = 0; i < HDRBMP; i++) {
-		header[i] = getc(streamIn);				/* Strip out BMP header, byte-wise */
+		header[i] = getc(streamIn);	/* Strip out BMP header, byte-wise */
 	}
 
 	if (gethd(&header[0], &hd)) {
@@ -67,12 +65,13 @@ int main(void) {
 	    perror("BMP header error");
 	    exit(EXIT_FAILURE);
 	}
+
 	getinfohd(header, &infohd);
 
 	/* BMP (Windows) header */
-	printf("\nBMP (Windows) header\n");
-	printhd(&hd);
-	printinfohd(&infohd);
+	//printf("\nBMP (Windows) header\n");
+	//printhd(&hd);
+	//printinfohd(&infohd);
 
 	if (infohd.bits <= HDRBD) {
 		fread(colorTable, sizeof(unsigned char), HBMPCT, streamIn);
@@ -91,14 +90,31 @@ int main(void) {
 
 	if (buf == NULL) {
 		perror("malloc()");
-                exit(EXIT_FAILURE);
+		exit(EXIT_FAILURE);
 	}
 
 	fread(buf, sizeof(unsigned char), sz, streamIn);
 
-	border(buf, infohd.width, infohd.height);
+	/* Apply filter */
+	if (option == 1) {/* White Border */
+		printf("Enter the border size:\n\n");
+		scanf("%d", &bsize);
+		border(buf, infohd.width, infohd.height, 255, bsize);
+	}
 
-	fo = fopen(out, "wb");			/* Open the file */
+	if (option == 2) {/* Black Border */
+		printf("Enter the border size:\n\n");
+		scanf("%d", &bsize);
+		border(buf, infohd.width, infohd.height, 0, bsize);
+	}
+
+	if (option == 3) /* Negative */
+		negative(buf, infohd.width, infohd.height);
+	
+	if (option == 3) /* Gradient */
+		gradient(buf, infohd.width, infohd.height);
+
+	fo = fopen(out, "wb");	/* Open the file */
 	if (fo == NULL) {
 		perror("fopen()");
 		exit(EXIT_FAILURE);
@@ -142,4 +158,3 @@ typedef struct {
 /* Vers�o compacta:       */
 /* *x ^= *y ^= *x^ = *y;  */
 /**************************/
-

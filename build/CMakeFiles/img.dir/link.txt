@@ -1,1 +1,0 @@
-/usr/bin/cc  -fno-omit-frame-pointer -DDBG -O3 -DNDEBUG CMakeFiles/img.dir/src/principal.c.o -o bin/img  lib/libmyimg.a 
