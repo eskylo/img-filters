@@ -1,14 +1,13 @@
 # Código de exemplo para propósito acadêmico
-## Simples implementação C de uma calculadora
+## Simples implementação C de um aplicador de filtros
 ## estruturada em forma de projeto
 
 Autor: Prof. Claudio Correa
 
 ## Resumo
 
-Esse é um exemplo de implementação de uma calculadora
-para as quatro operações aritméticas básicas, escrita 
-em linguagem C, com o propósito de ilustrar a estrutura 
+Esse é um exemplo de implementação de um aplicador de filtros
+escrito em linguagem C, com o propósito de ilustrar a estrutura 
 de desenvolvimento do projeto organizada em diretórios:
 
 . include
@@ -27,7 +26,6 @@ CMakeLists.txt)
 IMPORTANTE: o código principal (<it>main()</it>) está em src
 
 ## make
-
 Duas formas simples de gerar o executável:
 
 <ul>
@@ -48,27 +46,6 @@ Duas formas simples de gerar o executável:
   <li>	cmake .. && make VERBOSE=1</li>
   <li>	make test && doas make install/strip</li>
 </ul>
-
-A imagem apresenta a estrutura de diretórios:
- 
- <img src="images/calcdirs.png">
- 
-## Descrição dos arquivos
-
-CMakeLists.txt
-Makefile
-README.md
-mycalc.pc.in
-
-include:
-calc.h
-
-lib:
-funcoesarit.c
-funcoesaux.c
-
-src:
-calculadora.c
 
 ## git
 ### Ref.:
