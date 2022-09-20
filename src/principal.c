@@ -48,6 +48,7 @@ int main(void) {
 	printf("[1] White Border\n");
 	printf("[2] Black Border\n");
 	printf("[3] Negative\n");
+	printf("[4] Gradient\n");
 	scanf("%d", &option);
 
 	streamIn = fopen(fname, "rb");	/* Open the file */
@@ -111,7 +112,7 @@ int main(void) {
 	if (option == 3) /* Negative */
 		negative(buf, infohd.width, infohd.height);
 	
-	if (option == 3) /* Gradient */
+	if (option == 4) /* Gradient */
 		gradient(buf, infohd.width, infohd.height);
 
 	fo = fopen(out, "wb");	/* Open the file */
