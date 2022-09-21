@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <limits.h>
 #include "bmp.h"
-#include "showheader.h"
+#include "imgfilterproto.h"
 
 /*
    Header:
@@ -70,11 +70,6 @@ int main(void) {
 
 	getinfohd(header, &infohd);
 
-	/* BMP (Windows) header */
-	//printf("\nBMP (Windows) header\n");
-	//printhd(&hd);
-	//printinfohd(&infohd);
-
 	if (infohd.bits <= HDRBD) {
 		fread(colorTable, sizeof(unsigned char), HBMPCT, streamIn);
 	}
@@ -97,9 +92,13 @@ int main(void) {
 
 	fread(buf, sizeof(unsigned char), sz, streamIn);
 
-	/* Apply filter */
-	if (option == 0 {/* White Border */
-		properties(buf, infohd.width, infohd.height);
+	/* Properties */
+	if (option == 0) {
+		printf("\nBMP (Windows) header\n");
+		printhd(&hd);
+		printinfohd(&infohd);
+		min_max_color(buf, infohd.width, infohd.height);
+		real_size(&hd, &infohd);
 	}
 
 	/* Apply filter */

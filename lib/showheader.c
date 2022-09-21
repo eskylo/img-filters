@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <limits.h>
 #include "bmp.h"
-#include "showheader.h"
+#include "imgfilterproto.h"
 
 int gethd(unsigned char *header, bmpheader *hd) {
 	hd->type = *(unsigned short int *) &header[0];			/* Magic identifier */
