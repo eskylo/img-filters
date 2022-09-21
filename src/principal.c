@@ -45,6 +45,7 @@ int main(void) {
 
 	/* Display menu */
 	printf("Choose a filter:\n\n");
+	printf("[0] Properties\n");
 	printf("[1] White Border\n");
 	printf("[2] Black Border\n");
 	printf("[3] Negative\n");
@@ -95,6 +96,11 @@ int main(void) {
 	}
 
 	fread(buf, sizeof(unsigned char), sz, streamIn);
+
+	/* Apply filter */
+	if (option == 0 {/* White Border */
+		properties(buf, infohd.width, infohd.height);
+	}
 
 	/* Apply filter */
 	if (option == 1) {/* White Border */
