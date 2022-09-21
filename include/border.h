@@ -1,1 +1,0 @@
-void border(unsigned char *buf, int width, int height, int color);
