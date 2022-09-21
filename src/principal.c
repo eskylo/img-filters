@@ -33,8 +33,8 @@ int main(void) {
 	unsigned char header[HDRBMP] = {0};	/* To store the image header */
 	unsigned char colorTable[HBMPCT] = {0};	/* To store the colorTable, if it exists */
 
-	char fname[] = "./lena512.bmp";
-	char out[] = "./saida.bmp";
+	char fname[] = "./../lena512.bmp";
+	char out[] = "./../saida.bmp";
 	unsigned char *buf;
 	int option, bsize;
 
