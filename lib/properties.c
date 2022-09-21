@@ -1,6 +1,7 @@
 #include <stdio.h>
+#include "bmp.h"
 
-void properties(unsigned char *buf, int width, int height) {
+void min_max_color(unsigned char *buf, int width, int height) {
 
     int i, min, max;
 
@@ -11,7 +12,21 @@ void properties(unsigned char *buf, int width, int height) {
         if (buf[i] > max) max = buf[i];
     }
 
-    printf("\nMax color: %d",max);
-    printf("\nMin color: %d",min);
+    printf("Max color: %d\n",max);
+    printf("Min color: %d\n",min);
+
+}
+
+void real_size(bmpheader *hd, bmpinfoheader *infohd) {
+
+    int real_size;
+
+    real_size = infohd->width * infohd->height * infohd->bits/8 + HDRBMP + HBMPCT;
+
+    printf("Real size: %d\n", real_size);
+
+    /* Compare real size with size in header */
+    if (real_size == hd->size) printf("The file size in header is correct.\n");
+    else printf("The file size in header is wrong.\n");
 
 }
