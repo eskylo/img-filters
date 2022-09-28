@@ -43,15 +43,6 @@ int main(void) {
 	unsigned int i;
 	double sz;
 
-	/* Display menu */
-	printf("Choose a filter:\n\n");
-	printf("[0] Properties\n");
-	printf("[1] White Border\n");
-	printf("[2] Black Border\n");
-	printf("[3] Negative\n");
-	printf("[4] Gradient\n");
-	scanf("%d", &option);
-
 	streamIn = fopen(fname, "rb");	/* Open the file */
 	if (streamIn == NULL) {
 		perror("fopen()");
@@ -92,33 +83,47 @@ int main(void) {
 
 	fread(buf, sizeof(unsigned char), sz, streamIn);
 
-	/* Properties */
-	if (option == 0) {
-		printf("\nBMP (Windows) header\n");
-		printhd(&hd);
-		printinfohd(&infohd);
-		min_max_color(buf, infohd.width, infohd.height);
-		real_size(&hd, &infohd);
-	}
+	do {
 
-	/* Apply filter */
-	if (option == 1) {/* White Border */
-		printf("Enter the border size:\n\n");
-		scanf("%d", &bsize);
-		border(buf, infohd.width, infohd.height, 255, bsize);
-	}
+		/* Display menu */
+		printf("Choose a filter:\n\n");
+		printf("[0] Properties\n");
+		printf("[1] White Border\n");
+		printf("[2] Black Border\n");
+		printf("[3] Negative\n");
+		printf("[4] Gradient\n");
+		printf("[9] Exit\n");
+		scanf("%d", &option);
 
-	if (option == 2) {/* Black Border */
-		printf("Enter the border size:\n\n");
-		scanf("%d", &bsize);
-		border(buf, infohd.width, infohd.height, 0, bsize);
-	}
+		/* Properties */
+		if (option == 0) {
+			printf("\nBMP (Windows) header\n");
+			printhd(&hd);
+			printinfohd(&infohd);
+			min_max_color(buf, infohd.width, infohd.height);
+			real_size(&hd, &infohd);
+		}
 
-	if (option == 3) /* Negative */
-		negative(buf, infohd.width, infohd.height);
+		/* Apply filter */
+		if (option == 1) {/* White Border */
+			printf("Enter the border size:\n\n");
+			scanf("%d", &bsize);
+			border(buf, infohd.width, infohd.height, 255, bsize);
+		}
+
+		if (option == 2) {/* Black Border */
+			printf("Enter the border size:\n\n");
+			scanf("%d", &bsize);
+			border(buf, infohd.width, infohd.height, 0, bsize);
+		}
+
+		if (option == 3) /* Negative */
+			negative(buf, infohd.width, infohd.height);
+		
+		if (option == 4) /* Gradient */
+			gradient(buf, infohd.width, infohd.height);
 	
-	if (option == 4) /* Gradient */
-		gradient(buf, infohd.width, infohd.height);
+	} while (option != 9);
 
 	fo = fopen(out, "wb");	/* Open the file */
 	if (fo == NULL) {
