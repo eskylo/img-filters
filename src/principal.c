@@ -114,7 +114,11 @@ int main(void) {
 		if (option == 2) {/* Black Border */
 			printf("Enter the border size:\n\n");
 			scanf("%d", &bsize);
-			border(buf, infohd.width, infohd.height, 0, bsize);
+
+			if (bsize > infohd.width || bsize > infohd.height)
+				printf("Invalid border size.\n\n");
+			else
+				border(buf, infohd.width, infohd.height, 0, bsize);
 		}
 
 		if (option == 3) /* Negative */
