@@ -8,3 +8,4 @@ void negative(unsigned char *buf, int width, int height);
 void gradient(unsigned char *buf, int width, int height);
 void min_max_color(unsigned char *buf, int width, int height);
 void real_size(bmpheader *, bmpinfoheader *);
+void blur(unsigned char *buf, int width, int height) ;
