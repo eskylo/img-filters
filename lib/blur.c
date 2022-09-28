@@ -18,9 +18,9 @@ void blur(unsigned char *buf, int width, int height) {
 
     for (i = 1; i<width-1; i++){
         for (j = 1; j<height-1; j++){
-            img[i][j] = (img[i-1][j-1]+img[i-1][j]+img[i-1][j+1]
-                        +img[i+0][j-1]+img[i+0][j]+img[i+0][j+1]
-                        +img[i+1][j-1]+img[i+1][j]+img[i+1][j+1])/9
+            img[i][j] = (img[i-1][j-1]*1/9+img[i-1][j]*1/9+img[i-1][j+1]*1/9
+                        +img[i+0][j-1]*1/9+img[i+0][j]*1/9+img[i+0][j+1]*1/9
+                        +img[i+1][j-1]*1/9+img[i+1][j]*1/9+img[i+1][j+1]*1/9);
         }
     }
 
