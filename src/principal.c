@@ -92,6 +92,7 @@ int main(void) {
 		printf("[2] Black Border\n");
 		printf("[3] Negative\n");
 		printf("[4] Gradient\n");
+		printf("[5] Blur\n");
 		printf("[9] Exit\n");
 		scanf("%d", &option);
 
@@ -126,6 +127,9 @@ int main(void) {
 		
 		if (option == 4) /* Gradient */
 			gradient(buf, infohd.width, infohd.height);
+
+		if (option == 5) /* Gradient */
+			blur(buf, infohd.width, infohd.height);
 	
 	} while (option != 9);
 
