@@ -1,13 +1,13 @@
 #include <stdio.h>
 
-void border(unsigned char *buf, int width, int height, int color, int bsize) {
+void border(unsigned char *buf, int width, int height, unsigned char color, int bsize) {
 
     int i, j;
 
     // bottom-top border
     for (i=0; i<width*bsize; i++) {
         buf[i] = color; 
-        buf[width*height-i] = color; 
+        buf[width*height-i-1] = color; 
     }
   
     // side border
