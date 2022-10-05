@@ -93,6 +93,7 @@ int main(void) {
 		printf("[3] Negative\n");
 		printf("[4] Gradient\n");
 		printf("[5] Blur\n");
+		printf("[6] Rotate\n");
 		printf("[9] Exit\n");
 		scanf("%d", &option);
 
@@ -130,6 +131,9 @@ int main(void) {
 
 		if (option == 5) /* Gradient */
 			blur(buf, infohd.width, infohd.height);
+
+		if (option == 6) /* Rotate */
+			rotate(buf, infohd.width, infohd.height);
 	
 	} while (option != 9);
 
