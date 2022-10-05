@@ -42,6 +42,7 @@ int main(void) {
 
 	unsigned int i;
 	double sz;
+	unsigned char threshold;
 
 	streamIn = fopen(fname, "rb");	/* Open the file */
 	if (streamIn == NULL) {
@@ -94,6 +95,7 @@ int main(void) {
 		printf("[4] Gradient\n");
 		printf("[5] Blur\n");
 		printf("[6] Rotate\n");
+		printf("[7] Blackwhite\n");
 		printf("[9] Exit\n");
 		scanf("%d", &option);
 
@@ -134,6 +136,16 @@ int main(void) {
 
 		if (option == 6) /* Rotate */
 			rotate(buf, infohd.width, infohd.height);
+
+		if (option == 7) {/* Black Border */
+			printf("Enter the threshold:\n\n");
+			scanf("%d", &threshold);
+
+			if (threshold > 255 || threshold < 0)
+				printf("Invalid threshold.\n\n");
+			else
+				blackwhite(buf, infohd.width, infohd.height, threshold);
+		}
 	
 	} while (option != 9);
 
