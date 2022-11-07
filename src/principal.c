@@ -33,16 +33,23 @@ int main(void) {
 	unsigned char header[HDRBMP] = {0};	/* To store the image header */
 	unsigned char colorTable[HBMPCT] = {0};	/* To store the colorTable, if it exists */
 
-	char fname[] = "./../lena512.bmp";
-	char out[] = "./../saida.bmp";
+	char fname[] = "./../lena.pgm";
+	char out[] = "./../saida.pgm";
 	unsigned char *buf;
-	int option, bsize;
+	int option, bsize, file_type;
 
 	FILE *streamIn, *fo;
 
 	unsigned int i;
-	double sz;
+	int sz;
 	unsigned char threshold;
+
+	char pgm_signature[10];
+	char pgm_width[10];
+	char pgm_height[10];
+	char pgm_comments[100];
+	char pgm_max[10];
+	int width, height;
 
 	streamIn = fopen(fname, "rb");	/* Open the file */
 	if (streamIn == NULL) {
@@ -54,27 +61,62 @@ int main(void) {
 		header[i] = getc(streamIn);	/* Strip out BMP header, byte-wise */
 	}
 
-	if (gethd(&header[0], &hd)) {
-	    fclose(streamIn);
-	    perror("BMP header error");
+	file_type = 0;
+
+	if (header[0] == 'P' && header[1] == '5') {
+		printf("PGM P5 detected.\n");
+		file_type = 2;
+	}
+
+	if (gethd(&header[0], &hd) == 0) {
+		printf("BMP detected.\n");
+	    file_type = 1;
+	}
+
+	if (file_type == 0) {
+		fclose(streamIn);
+	    perror("Invalid signature.\n");
 	    exit(EXIT_FAILURE);
 	}
 
-	getinfohd(header, &infohd);
+	if (file_type == 1) {//BMP
+		getinfohd(header, &infohd);
 
-	if (infohd.bits <= HDRBD) {
-		fread(colorTable, sizeof(unsigned char), HBMPCT, streamIn);
+		if (infohd.bits <= HDRBD) {
+			fread(colorTable, sizeof(unsigned char), HBMPCT, streamIn);
+		}
+
+		/* Avoid invalid requests */
+		if (infohd.height < 0 || infohd.width < 0)
+			perror("Overflow");
+
+		/* Check for signed int overflow */
+		if (infohd.height && infohd.width > INT_MAX / infohd.height)
+			perror("Overflow");
+
+		height = infohd.height;
+		width = infohd.width;
+		sz = height * width;
+	}
+	
+	if (file_type == 2) {//PGM
+		rewind(streamIn);
+		fscanf(streamIn, "%s\n", pgm_signature);
+		printf("Signature[%s]\n", pgm_signature);
+		fscanf(streamIn, "%[^\n]s", pgm_comments);
+		printf("Comments(%s)\n", pgm_comments);
+		fscanf(streamIn, "%s %s", pgm_width, pgm_height);
+		printf("Dim{%s x %s}\n", pgm_width, pgm_height);
+		fscanf(streamIn, "%s", pgm_max);
+		printf("MAX{%s}\n", pgm_max);
+
+		width = atoi(pgm_width);
+		height = atoi(pgm_height);
+		sz = height * width;
+
+		printf("Size{%d}\n", sz);
 	}
 
-	/* Avoid invalid requests */
-	if (infohd.height < 0 || infohd.width < 0)
-	    perror("Overflow");
-
-	/* Check for signed int overflow */
-	if (infohd.height && infohd.width > INT_MAX / infohd.height)
-	    perror("Overflow");
-
-	sz = infohd.height * infohd.width;
 	buf = (unsigned char *) malloc(sz);	/* To store the image data */
 
 	if (buf == NULL) {
@@ -104,7 +146,7 @@ int main(void) {
 			printf("\nBMP (Windows) header\n");
 			printhd(&hd);
 			printinfohd(&infohd);
-			min_max_color(buf, infohd.width, infohd.height);
+			min_max_color(buf, width, height);
 			real_size(&hd, &infohd);
 		}
 
@@ -112,30 +154,30 @@ int main(void) {
 		if (option == 1) {/* White Border */
 			printf("Enter the border size:\n\n");
 			scanf("%d", &bsize);
-			border(buf, infohd.width, infohd.height, 255, bsize);
+			border(buf, width, height, 255, bsize);
 		}
 
 		if (option == 2) {/* Black Border */
 			printf("Enter the border size:\n\n");
 			scanf("%d", &bsize);
 
-			if (bsize > infohd.width || bsize > infohd.height)
+			if (bsize > width || bsize > height)
 				printf("Invalid border size.\n\n");
 			else
-				border(buf, infohd.width, infohd.height, 0, bsize);
+				border(buf, width, height, 0, bsize);
 		}
 
 		if (option == 3) /* Negative */
-			negative(buf, infohd.width, infohd.height);
+			negative(buf, width, height);
 		
 		if (option == 4) /* Gradient */
-			gradient(buf, infohd.width, infohd.height);
+			gradient(buf, width, height);
 
 		if (option == 5) /* Gradient */
-			blur(buf, infohd.width, infohd.height);
+			blur(buf, width, height);
 
 		if (option == 6) /* Rotate */
-			rotate(buf, infohd.width, infohd.height);
+			rotate(buf, width, height);
 
 		if (option == 7) {/* Black Border */
 			printf("Enter the threshold:\n\n");
@@ -144,7 +186,7 @@ int main(void) {
 			if (threshold > 255 || threshold < 0)
 				printf("Invalid threshold.\n\n");
 			else
-				blackwhite(buf, infohd.width, infohd.height, threshold);
+				blackwhite(buf, width, height, threshold);
 		}
 	
 	} while (option != 9);
@@ -155,11 +197,20 @@ int main(void) {
 		exit(EXIT_FAILURE);
 	}
 
-	/* Write the image header to output file */
-	fwrite(header, sizeof(unsigned char), HDRBMP, fo);
+	if (file_type == 1) {//BMP
+		/* Write the image header to output file */
+		fwrite(header, sizeof(unsigned char), HDRBMP, fo);
 
-	if (infohd.bits <= 8) {
-		fwrite(colorTable, sizeof(unsigned char), HBMPCT, fo);
+		if (infohd.bits <= 8) {
+			fwrite(colorTable, sizeof(unsigned char), HBMPCT, fo);
+		}
+	}
+	
+	if (file_type == 2) {//PGM
+		fprintf(fo, "%s\n", pgm_signature);
+		fprintf(fo, "%s\n", pgm_comments);
+		fprintf(fo, "%d %d\n", width, height);
+		fprintf(fo, "%s\n", pgm_max);
 	}
 
 	fwrite(buf, sizeof(unsigned char), sz, fo);
