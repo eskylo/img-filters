@@ -58,7 +58,7 @@ add_executable(img ${SOURCES})
 target_link_libraries(img myimg)
 
 # ls -1 lib/*.c
-add_library(myimg STATIC lib/rotate.c lib/blackwhite.c lib/showheader.c lib/border.c lib/negative.c lib/gradient.c lib/properties.c lib/blur.c)
+add_library(myimg STATIC lib/sepia.c lib/grayscale.c lib/rotate.c lib/blackwhite.c lib/showheader.c lib/border.c lib/negative.c lib/gradient.c lib/properties.c lib/blur.c)
 # add_library(myimg SHARED lib/funcoesarit.c lib/funcoesaux.c)
 
 set_target_properties(myimg PROPERTIES

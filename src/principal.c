@@ -33,8 +33,8 @@ int main(void) {
 	unsigned char header[HDRBMP] = {0};	/* To store the image header */
 	unsigned char colorTable[HBMPCT] = {0};	/* To store the colorTable, if it exists */
 
-	char fname[] = "./../lena.pgm";
-	char out[] = "./../saida.pgm";
+	char fname[] = "./../lena_color.bmp";
+	char out[] = "./../saida2.bmp";
 	unsigned char *buf;
 	int option, bsize, file_type;
 
@@ -42,7 +42,7 @@ int main(void) {
 
 	unsigned int i;
 	int sz;
-	unsigned char threshold;
+	short threshold, bytes_pixel;
 
 	char pgm_signature[10];
 	char pgm_width[10];
@@ -97,6 +97,7 @@ int main(void) {
 		height = infohd.height;
 		width = infohd.width;
 		sz = height * width;
+		bytes_pixel = infohd.bits/8;
 	}
 	
 	if (file_type == 2) {//PGM
@@ -113,18 +114,19 @@ int main(void) {
 		width = atoi(pgm_width);
 		height = atoi(pgm_height);
 		sz = height * width;
+		bytes_pixel = 1;
 
 		printf("Size{%d}\n", sz);
 	}
 
-	buf = (unsigned char *) malloc(sz);	/* To store the image data */
+	buf = (unsigned char *) malloc(sz*bytes_pixel);	/* To store the image data */
 
 	if (buf == NULL) {
 		perror("malloc()");
 		exit(EXIT_FAILURE);
 	}
 
-	fread(buf, sizeof(unsigned char), sz, streamIn);
+	fread(buf, sizeof(unsigned char), sz*bytes_pixel, streamIn);
 
 	do {
 
@@ -138,7 +140,9 @@ int main(void) {
 		printf("[5] Blur\n");
 		printf("[6] Rotate\n");
 		printf("[7] Blackwhite\n");
-		printf("[9] Exit\n");
+		printf("[8] Grayscale\n");
+		printf("[9] Sepia\n");
+		printf("[10] Exit\n");
 		scanf("%d", &option);
 
 		/* Properties */
@@ -154,7 +158,11 @@ int main(void) {
 		if (option == 1) {/* White Border */
 			printf("Enter the border size:\n\n");
 			scanf("%d", &bsize);
-			border(buf, width, height, 255, bsize);
+
+			if (bsize > width || bsize > height)
+				printf("Invalid border size.\n\n");
+			else
+				border(buf, width, height, bytes_pixel, 255, bsize);
 		}
 
 		if (option == 2) {/* Black Border */
@@ -164,22 +172,22 @@ int main(void) {
 			if (bsize > width || bsize > height)
 				printf("Invalid border size.\n\n");
 			else
-				border(buf, width, height, 0, bsize);
+				border(buf, width, height, bytes_pixel, 0, bsize);
 		}
 
 		if (option == 3) /* Negative */
-			negative(buf, width, height);
+			negative(buf, width, height, bytes_pixel);
 		
 		if (option == 4) /* Gradient */
 			gradient(buf, width, height);
 
-		if (option == 5) /* Gradient */
+		if (option == 5) /* Blur */
 			blur(buf, width, height);
 
 		if (option == 6) /* Rotate */
 			rotate(buf, width, height);
 
-		if (option == 7) {/* Black Border */
+		if (option == 7) {/* Blackwhite */
 			printf("Enter the threshold:\n\n");
 			scanf("%d", &threshold);
 
@@ -188,8 +196,14 @@ int main(void) {
 			else
 				blackwhite(buf, width, height, threshold);
 		}
+
+		if (option == 8) /* Grayscale */
+			grayscale(buf, width, height);
+
+		if (option == 9) /* Sepia */
+			sepia(buf, width, height);
 	
-	} while (option != 9);
+	} while (option != 10);
 
 	fo = fopen(out, "wb");	/* Open the file */
 	if (fo == NULL) {
@@ -213,7 +227,7 @@ int main(void) {
 		fprintf(fo, "%s\n", pgm_max);
 	}
 
-	fwrite(buf, sizeof(unsigned char), sz, fo);
+	fwrite(buf, sizeof(unsigned char), sz*bytes_pixel, fo);
 
 	fclose(fo);
 	fclose(streamIn);
